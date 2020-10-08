@@ -24,9 +24,9 @@ username = "@tuat_agricboard "
 def main():
     new_ilist = []
     new_dlist = []
-    #学生生活、教務を２０件ずつとってきて、id, dateをそれぞれnewリストに追加
+    #学生生活、教務を１０件ずつとってきて、id, dateをそれぞれnewリストに追加
     for num in range(2):
-        resp = requests.get("http://t-board.office.tuat.ac.jp/A/boar/resAjax.php", params={'bAnno': num})
+        resp = requests.get("http://t-board.office.tuat.ac.jp/A/boar/resAjax.php", params={'bAnno': num, 'par': 10})
         soup = BeautifulSoup(resp.text, 'lxml')
         new_ilist.extend([tr.get('i') for tr in soup.find_all('tr', {'class': "row"})])
         new_dlist.extend([p.get_text()[:5] for p in soup.find_all('p', {'class': ""})])
