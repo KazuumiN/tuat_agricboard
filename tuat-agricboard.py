@@ -22,6 +22,7 @@ url = "https://api.twitter.com/1.1/statuses/update.json"
 username = "@tuat_agricboard "
 
 def main():
+    global res
     new_ilist = []
     new_dlist = []
     #学生生活、教務を１０件ずつとってきて、id, dateをそれぞれnewリストに追加
@@ -54,6 +55,7 @@ def main():
                 #タイトルと対象者を連結し、ツイート
                 title_target = title + '\n' + target
                 res = twitter.post(url, params = {"status" : title_target})
+                jsoned = json.loads(res.text)
                 #本文全体が英語のとき、文字数制限が倍になるためlimitationを大きくする
                 if not re.compile('[\u0000-\u007F]+').fullmatch(title_):#日本語を含む時
                     limitation = 130
@@ -65,6 +67,7 @@ def main():
                     #contentを分割、自身のユーザー名と共にhonbunに代入し、ツイート
                     honbun = username + content[a * limitation:(a + 1) * limitation]
                     res = twitter.post(url, params = {"status" : honbun, "in_reply_to_status_id": jsoned["id_str"]})
+                    jsoned = json.loads(res.text)
                 #リンク、添付ファイルがあるか確認し、あれば一つづつリプライ
                 if links != None:
                     for l in links:
@@ -73,11 +76,13 @@ def main():
                         #linkに自身のユーザー名と添付ファイル名、ファイルのアドレスを代入し、ツイート
                         link = username + l.get_text() + "\n" + href
                         res = twitter.post(url, params = {"status" : link, "in_reply_to_status_id": jsoned["id_str"]})
+                        jsoned = json.loads(res.text)
                 if attach != None:
                     for a in attach:
                         #tenpuに自身のユーザー名と添付ファイル名、ファイルのアドレスを代入し、ツイート
                         tenpu = username + a.get_text() + "\nhttp://t-board.office.tuat.ac.jp" + a.get("href")
                         res = twitter.post(url, params = {"status" : tenpu, "in_reply_to_status_id": jsoned["id_str"]})
+                        jsoned = json.loads(res.text)
 
         return
 
