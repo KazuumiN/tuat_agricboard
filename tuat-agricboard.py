@@ -47,11 +47,12 @@ def main():
             r.set(i,d)
 
         for i, d in zip(new_ilist, new_dlist):
-            #前回のリストとかぶってないかチェック
+            #一日以上前にPostされてたらfor文をcontinueする
             d1 = str(now.year) + "/"+d
             d2 = datetime.datetime.strptime(d1, "%Y/%m/%d")
             if abs(now - d2).days > 0:
                 continue
+            #前回のリストとかぶってないかチェック
             if not i in old_ilist or (i in old_ilist and d != old_dlist[old_ilist.index(i)]):
                 #get_contents関数に投げるとタイトル、対象者、コンテンツ、リンクと添付ファイルを返してくれる
                 title, target, content, links, attach = get_contents(i)
